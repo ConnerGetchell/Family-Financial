@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+
+ <div class="container">
+
+     <h1>Memos for the Family</h1>
+
+     <table> <!--Horizontal row of details regarding topic info-->
+       <thead class="thead-inverse">
+         <tr>
+           <th>Memo</th>
+           <th>Created By</th>
+           <th>Posted On</th>
+           <th> </th>
+         </tr>
+       </thead>
+       <tbody>
+         {% for memo in memos %} <!--iterates through the topics model to list them-->
+           <tr>
+             <td>{{ memo.subject }}</td>
+             <td>{{ memo.user }}</td>
+             <td>{{ memo.date }}</td>
+             <td><a href="comment.html" class="btn">Comment</a></td>
+           </tr>
+         {% endfor %}
+       </tbody>
+     </table>
+
+ </div>
+
+ {% endblock %}

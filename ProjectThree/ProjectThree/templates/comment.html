@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+
+ <div class="container">
+
+     <h1>{{ memoComment.comment }}</h1>
+
+     <table> <!--Horizontal row of details regarding topic info-->
+       <thead class="thead-inverse">
+         <tr>
+           <th>Comment</th>
+           <th>Created By</th>
+           <th>Posted On</th>
+
+         </tr>
+       </thead>
+       <tbody>
+         {% for memoComment in memoComments %} <!--iterates through the topics model to list them-->
+           <tr>
+             <td>{{ memoComment.comment }}</td>
+             <td>{{ memoComment.user }}</td>
+             <td>{{ memoComment.date }}</td>
+
+           </tr>
+         {% endfor %}
+       </tbody>
+     </table>
+
+ </div>
+
+ {% endblock %}

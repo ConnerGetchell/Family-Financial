@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load chartit %}
+{{chart_list | load_charts:"cht"}}
+ <div class="container">
+
+     <div id='cht'></div>
+
+ </div>
+
+ {% endblock %}
