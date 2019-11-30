@@ -9,14 +9,22 @@ from django.db import models
 from django.contrib.auth.models import User
 import uuid
 
+class Family(models.Model):
+    name = models.CharField(max_length=30)
+    def __str__(self):
+        return self.name
+
+class Member(models.Model):
+    fam_id = models.ForeignKey(Family, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
 
 class Debt(models.Model):
     net_amount = models.BigIntegerField(default=0, null=True)
     type = models.CharField(max_length=255, null=True)
     date = models.DateTimeField(auto_now_add=True, null=True)
     borrow_from = models.CharField(max_length=255, null=True)
-    user = models.ForeignKey(
-        User, default=0, related_name='debt', on_delete=models.CASCADE)
+    Member_id = models.ForeignKey(
+        Member, default=0, related_name='debt', on_delete=models.CASCADE)
 
     def __str__(self):  # get function
         return self.type
@@ -31,9 +39,8 @@ class Earning(models.Model):
     year = models.BigIntegerField(default=0, null=True)
     wage = models.BigIntegerField(default=0, null=True)
     date = models.DateTimeField(auto_now_add=True, null=True)
-    user = models.ForeignKey(
-        User, default=0, related_name='earning', on_delete=models.CASCADE)
-
+    Member_id = models.ForeignKey(
+        Member, default=0, related_name='earning', on_delete=models.CASCADE)
     def __str__(self):  # get function
         return self.type
 
@@ -45,8 +52,8 @@ class Earning(models.Model):
 class Goal(models.Model):
     task = models.CharField(max_length=255, null=True)
     budget = models.BigIntegerField(default=0, null=True)
-    user = models.ForeignKey(
-        User, default=0, related_name='goal', on_delete=models.CASCADE)
+    Member_id = models.ForeignKey(
+        Member, default=0, related_name='goal', on_delete=models.CASCADE)
 
     def __str__(self):  # get function
         return self.task
@@ -60,8 +67,8 @@ class Investment(models.Model):
     net_amount = models.BigIntegerField(default=0, null=True)
     type = models.CharField(max_length=255, null=True)
     date = models.DateTimeField(auto_now_add=True, null=True)
-    user = models.ForeignKey(
-        User, default=0, related_name='investment', on_delete=models.CASCADE)
+    Member_id = models.ForeignKey(
+        Member, default=0, related_name='investment', on_delete=models.CASCADE)
 
     def __str__(self):  # get function
         return self.type
@@ -77,8 +84,8 @@ class Spending(models.Model):
     date = models.DateTimeField(auto_now_add=True, null=True)
     type = models.CharField(max_length=255, null=True)
     purpose = models.CharField(max_length=255, null=True)
-    user = models.ForeignKey(
-        User, default=0, related_name='spending', on_delete=models.CASCADE)
+    Member_id = models.ForeignKey(
+        Member, default=0, related_name='spending', on_delete=models.CASCADE)
 
     def __str__(self):  # get function
         return self.type

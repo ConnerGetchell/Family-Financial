@@ -3,7 +3,7 @@ from .models import Debt, Spending, Earning, Investment,  Memo, MemoComment
 from chartit import DataPool, Chart, PivotDataPool, PivotChart
 from django.views import generic
 from .forms import CommentForm
-
+from django.contrib.auth.decorators import login_required
 # finance views
 
 
@@ -35,19 +35,19 @@ from .forms import CommentForm
 #                                            'comments': comments,
 #                                            'new_comment': new_comment,
 #                                            'comment_form': comment_form})
-
+@login_required
 def home(request):
     memo = Memo.objects.all()
     context = {'memos': memo}
     return render(request, 'home.html', context)
 
-
+@login_required
 def comment(request):
     memoComment = MemoComment.objects.all()
     context = {'memoComments': memoComment}
     return render(request, 'comment.html', context)
 
-
+@login_required
 def earning(request):
     earning = DataPool(  # what data is being retrieved and where it is being retrieved from
         series=[
@@ -80,7 +80,7 @@ def earning(request):
     )
     return render(request, 'earning.html', {'chart_list': [cht]})
 
-
+@login_required
 def debt(request):
     debt = DataPool(  # what data is being retrieved and where it is being retrieved from
         series=[
@@ -114,7 +114,7 @@ def debt(request):
     )
     return render(request, 'debt.html', {'chart_list': [cht]})
 
-
+@login_required
 def spending(request):
     spending = DataPool(  # what data is being retrieved and where it is being retrieved from
         series=[
@@ -148,7 +148,7 @@ def spending(request):
     )
     return render(request, 'spending.html', {'chart_list': [cht]})
 
-
+@login_required
 def investment(request):
     investment = DataPool(  # what data is being retrieved and where it is being retrieved from
         series=[
@@ -181,7 +181,7 @@ def investment(request):
     )
     return render(request, 'investment.html', {'chart_list': [cht]})
 
-
+@login_required
 def inandout(request):
     debt = DataPool(  # what data is being retrieved and where it is being retrieved from
         series=[{'options': {
