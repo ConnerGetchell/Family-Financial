@@ -1,40 +1,37 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Debt, Spending, Earning, Investment,  Memo, MemoComment
+from .models import  Family, Member, Debt, Spending, Earning, Investment,  Memo, MemoComment
 from chartit import DataPool, Chart, PivotDataPool, PivotChart
 from django.views import generic
-from .forms import CommentForm
+from .forms import CommentForm, NewMemoForm
 from django.contrib.auth.decorators import login_required
 # finance views
 
+def new_memo(request):
+    currentMember = Member.objects.get(user_id=request.user)
+    if request.method == 'POST':
+        form = NewMemoForm(request.POST)
+        if form.is_valid():
+            memo = form.save(commit=False)
+            memo.Member_id = currentMember
+            memo.save()
+            MemoComment.objects.create(
+                comment = form.cleaned_data.get('message'),
+                memo = memo,
+                Member_id = currentMember
+                )
+    else:
+        form = NewMemoForm()
+    return render(request, 'new_memo.html', {'form' : form})
 
-# class home(generic.ListView):
-#     queryset = Memo.objects.filter(status=1).order_by('-created_on')
-#     template_name = 'home.html'
-#
-#
-# def post_detail(request, slug):
-#     template_name = 'comment.html'
-#     memo = get_object_or_404(Memo, slug=slug)
-#     comments = memo.comments.filter(active=True)
-#     new_comment = None
-#     # Comment posted
-#     if request.method == 'POST':
-#         comment_form = CommentForm(data=request.POST)
-#         if comment_form.is_valid():
-#
-#             # Create Comment object but don't save to database yet
-#             new_comment = comment_form.save(commit=False)
-#             # Assign the current post to the comment
-#             new_comment.memo = memo
-#             # Save the comment to the database
-#             new_comment.save()
-#     else:
-#         comment_form = CommentForm()
-#
-#     return render(request, template_name, {'memo': memo,
-#                                            'comments': comments,
-#                                            'new_comment': new_comment,
-#                                            'comment_form': comment_form})
+
+@login_required
+def memberIncome(request):
+    return render(request, 'memberIncome.html')
+
+@login_required
+def memberSpending(request):
+    return render(request, 'memberSpending.html')
+
 @login_required
 def home(request):
     memo = Memo.objects.all()
@@ -49,10 +46,14 @@ def comment(request):
 
 @login_required
 def earning(request):
+    member = Member.objects.get(user_id=request.user.id)
+    family_id = member.fam_id
+    all_family_members = Member.objects.filter(fam_id=family_id)
+    Earnings = Earning.objects.filter(Member_id__in=all_family_members)
     earning = DataPool(  # what data is being retrieved and where it is being retrieved from
         series=[
             {'options': {
-                'source': Earning},
+                'source': Earnings},
              'terms': [{
                  'wage': 'wage', 'year': 'year'}]},
         ]
@@ -78,14 +79,18 @@ def earning(request):
             'enabled': True}},
 
     )
-    return render(request, 'earning.html', {'chart_list': [cht]})
+    return render(request, 'earning.html', {'chart_list': [cht], 'member' : member})
 
 @login_required
 def debt(request):
+    member = Member.objects.get(user_id=request.user.id)
+    family_id = member.fam_id
+    all_family_members = Member.objects.filter(fam_id=family_id)
+    Debts = Debt.objects.filter(Member_id__in=all_family_members)
     debt = DataPool(  # what data is being retrieved and where it is being retrieved from
         series=[
             {'options': {
-                'source': Debt},
+                'source': Debts},
              'terms': [{
                  'type': 'type', 'net_amount': 'net_amount'}]},
         ]
@@ -116,10 +121,14 @@ def debt(request):
 
 @login_required
 def spending(request):
+    member = Member.objects.get(user_id=request.user.id)
+    family_id = member.fam_id
+    all_family_members = Member.objects.filter(fam_id=family_id)
+    Spendings = Spending.objects.filter(Member_id__in=all_family_members)
     spending = DataPool(  # what data is being retrieved and where it is being retrieved from
         series=[
             {'options': {
-                'source': Spending},
+                'source': Spendings},
              'terms': [{
                  'type': 'type', 'neg_amount': 'neg_amount'}]},
         ]
@@ -150,10 +159,14 @@ def spending(request):
 
 @login_required
 def investment(request):
+    member = Member.objects.get(user_id=request.user.id)
+    family_id = member.fam_id
+    all_family_members = Member.objects.filter(fam_id=family_id)
+    Investments = Investment.objects.filter(Member_id__in=all_family_members)
     investment = DataPool(  # what data is being retrieved and where it is being retrieved from
         series=[
             {'options': {
-                'source': Investment},
+                'source': Investments},
              'terms': [{
                  'type': 'type', 'net_amount': 'net_amount'}]},
         ]
@@ -183,13 +196,18 @@ def investment(request):
 
 @login_required
 def inandout(request):
+    member = Member.objects.get(user_id=request.user.id)
+    family_id = member.fam_id
+    all_family_members = Member.objects.filter(fam_id=family_id)
+    Earnings = Earning.objects.filter(Member_id__in=all_family_members)
+    Spendings = Spending.objects.filter(Member_id__in=all_family_members)
     debt = DataPool(  # what data is being retrieved and where it is being retrieved from
         series=[{'options': {
-            'source': Earning},
+            'source': Earnings},
             'terms': [
                 {'wage': 'wage', 'year': 'year'}]},
             {'options': {
-                'source': Spending},
+                'source': Spendings},
              'terms': [
                 {'neg_amount': 'neg_amount', 'year2': 'year'}]}]
 

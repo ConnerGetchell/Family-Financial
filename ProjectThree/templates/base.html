@@ -26,12 +26,15 @@
 </head>
 <body>
      <ul>
-       <li><a href="home.html">Home</a></li>
-       <li><a href="earning.html">Earnings</a></li>
-       <li><a href="debt.html">Debts</a></li>
-       <li><a href="spending.html">Spendings</a></li>
-       <li><a href="investment.html">Investments</a></li>
-       <li><a href="inandout.html">In & Out</a></li>
+       <li><a href="{% url 'home' %}">Home</a></li>
+       <li><a href="{% url 'earning' %}">Earnings</a></li>
+       <li><a href="{% url 'debt' %}">Debts</a></li>
+       <li><a href="{% url 'spending' %}">Spendings</a></li>
+       <li><a href="{% url 'investment' %}">Investments</a></li>
+       <li><a href="{% url 'inandout' %}">In & Out</a></li>
+       <li><a href="{% url 'memberIncome' %}">Member Income</a></li>
+       <li><a href="{% url 'memberSpending' %}">Member Spending</a></li>
+       <li><a href="{% url 'logout' %}">Log Out</a></li>
      </ul>
 
 

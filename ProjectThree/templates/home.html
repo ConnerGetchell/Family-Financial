@@ -18,13 +18,15 @@
          {% for memo in memos %} <!--iterates through the topics model to list them-->
            <tr>
              <td>{{ memo.subject }}</td>
-             <td>{{ memo.user }}</td>
+             <td>{{ memo.Member_id }}</td>
              <td>{{ memo.date }}</td>
              <td><a href="comment.html" class="btn">Comment</a></td>
            </tr>
          {% endfor %}
        </tbody>
      </table>
+
+     <a href="{% url 'new_memo' %}" class="btn"> Create Memo</a>
 
  </div>
 

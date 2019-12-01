@@ -17,6 +17,8 @@ class Family(models.Model):
 class Member(models.Model):
     fam_id = models.ForeignKey(Family, on_delete=models.CASCADE)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    def __str__(self):
+        return self.user_id.username
 
 class Debt(models.Model):
     net_amount = models.BigIntegerField(default=0, null=True)
@@ -106,8 +108,8 @@ class Memo(models.Model):
     # slug = models.SlugField(max_length=200, unique=True, default=uuid.uuid1)
     date = models.DateTimeField(auto_now_add=True, null=True)
     # status = models.IntegerField(choices=STATUS, default=0)
-    user = models.ForeignKey(
-        User, default=0, related_name='Memo', on_delete=models.CASCADE)
+    Member_id = models.ForeignKey(
+        Member, default=0, related_name='memo', on_delete=models.CASCADE)
 
     def __str__(self):  # get function
         return self.subject
@@ -117,8 +119,8 @@ class MemoComment(models.Model):
     memo = models.ForeignKey(Memo, on_delete=models.CASCADE, related_name='memoComment')
     comment = models.CharField(max_length=4000, null=True)
     date = models.DateTimeField(auto_now_add=True, null=True)
-    user = models.ForeignKey(
-        User, default=0, related_name='memoComment', on_delete=models.CASCADE)
+    Member_id = models.ForeignKey(
+        Member, default=0, related_name='memoComment', on_delete=models.CASCADE)
 
     def __str__(self):  # get function
         return self.comment

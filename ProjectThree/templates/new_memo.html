@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Create a new Memo for the Family
+{% endblock%}
+
+{% block content %}
+  <form method="post">
+    {% csrf_token %}
+    {% include 'includes/form.html' %}
+    <button type="submit" class="btn btn-dark">Post</button>
+  </form>
+{% endblock %}
