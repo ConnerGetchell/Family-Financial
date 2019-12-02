@@ -15,12 +15,12 @@
          </tr>
        </thead>
        <tbody>
-         {% for memo in memos %} <!--iterates through the topics model to list them-->
+         {% for memo in memos %}
            <tr>
-             <td>{{ memo.subject }}</td>
+             <td><a href="{% url 'memo_comments' memo.id %}">{{ memo.subject }}</a></td>
              <td>{{ memo.Member_id }}</td>
              <td>{{ memo.date }}</td>
-             <td><a href="comment.html" class="btn">Comment</a></td>
+             <td><a href="{% url 'reply_memo' memo.id %}" class="btn">Comment</a></td>
            </tr>
          {% endfor %}
        </tbody>

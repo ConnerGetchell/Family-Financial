@@ -18,7 +18,7 @@ class Member(models.Model):
     fam_id = models.ForeignKey(Family, on_delete=models.CASCADE)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     def __str__(self):
-        return self.user_id.username
+        return self.user_id.first_name +" "+ self.user_id.last_name
 
 class Debt(models.Model):
     net_amount = models.BigIntegerField(default=0, null=True)
@@ -120,7 +120,7 @@ class MemoComment(models.Model):
     comment = models.CharField(max_length=4000, null=True)
     date = models.DateTimeField(auto_now_add=True, null=True)
     Member_id = models.ForeignKey(
-        Member, default=0, related_name='memoComment', on_delete=models.CASCADE)
+        Member, default=0, related_name='comments', on_delete=models.CASCADE)
 
     def __str__(self):  # get function
         return self.comment

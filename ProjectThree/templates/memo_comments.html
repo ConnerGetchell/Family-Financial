@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block title %}
+  Created By:{{ memo.Member_id.user_id.first_name }} {{ memo.Member_id.user_id.last_name}}
+{% endblock %}
+
+{% block content %}
+
+  <div class="mb-4">
+    <a href="{% url 'reply_memo' memo.id %}" class="btn btn-dark" role="button">Reply</a>
+  </div>
+  {% for comment in comments %}
+    <div class="card mb-2 {% if forloop.first %} border-dark {% endif %}">
+      {% if forloop.first %}
+        <div class="card-header text-white bg-dark py-2 px-3">{{ memo.subject }}</div>
+      {% endif %}
+      <div class="card-body p-3">
+        <div class="row">
+          <div class="col-10">
+            <div class="row mb-3">
+              <div class="col-6">
+                <strong class="text-muted">{{ comment.Member_id.user_id.first_name }}</strong>
+              </div>
+              <div class="col-6 text-right">
+                <small class="text-muted">{{ comment.date }}</small>
+              </div>
+            </div>
+            {{ comment.comment }}
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+
+{% endblock %}

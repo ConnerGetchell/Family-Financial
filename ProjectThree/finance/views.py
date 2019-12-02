@@ -5,7 +5,28 @@ from django.views import generic
 from .forms import CommentForm, NewMemoForm
 from django.contrib.auth.decorators import login_required
 # finance views
+@login_required
+def memo_comments(request, pk):
+    memo = Memo.objects.get(id=pk)
+    comments = MemoComment.objects.filter(memo=memo)
+    return render(request,'memo_comments.html', {'memo': memo, 'comments': comments})
 
+@login_required
+def reply_memo(request, pk):
+    currentMember = Member.objects.get(user_id=request.user)
+    memo = Memo.objects.get(id=pk)
+    comments = MemoComment.objects.filter(memo=memo)
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.Member_id = currentMember
+            comment.memo = memo
+            comment.save()
+    form = CommentForm()
+    return render(request, 'reply_memo.html', {'memo' : memo,'comments':comments, 'form': form })
+
+@login_required
 def new_memo(request):
     currentMember = Member.objects.get(user_id=request.user)
     if request.method == 'POST':
@@ -21,7 +42,7 @@ def new_memo(request):
                 )
     else:
         form = NewMemoForm()
-    return render(request, 'new_memo.html', {'form' : form})
+    return render(request, 'new_memo.html', {'form': form})
 
 
 @login_required
@@ -30,13 +51,16 @@ def memberIncome(request):
 
 @login_required
 def memberSpending(request):
+
     return render(request, 'memberSpending.html')
 
 @login_required
 def home(request):
-    memo = Memo.objects.all()
-    context = {'memos': memo}
-    return render(request, 'home.html', context)
+    currentMember = Member.objects.get(user_id=request.user.id)
+    currentFamily = currentMember.fam_id
+    all_family_members = Member.objects.filter(fam_id=currentFamily)
+    memos = Memo.objects.filter(Member_id__in=all_family_members)
+    return render(request, 'home.html', {'memos': memos})
 
 @login_required
 def comment(request):

@@ -41,4 +41,6 @@ urlpatterns = [
     path('memberIncome/', views.memberIncome, name='memberIncome'),
     path('memberSpending/', views.memberSpending, name='memberSpending'),
     path('new_memo', views.new_memo, name='new_memo'),
+    path('reply_memo/<int:pk>', views.reply_memo, name='reply_memo'),
+    path('memo_comments/<int:pk>', views.memo_comments, name='memo_comments'),
 ]
